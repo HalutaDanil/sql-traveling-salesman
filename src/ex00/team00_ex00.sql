@@ -20,9 +20,24 @@ with recursive
         where p.point2 != all(r.tour[2:array_length(r.tour, 1)])
     )
 
+    , final_routes as (
+        select
+            cost as total_cost
+            , tour
+        from routes
+        where
+            tour[array_length(tour, 1)] = 'A'
+            and array_length(tour, 1)
+            = (select count(distinct point1) from paths) + 1
+    )
+
 select
-    cost as total_cost
+    total_cost
     , tour
-from routes
-where tour[array_length(tour, 1)] = 'A' and array_length(tour, 1) = 5
+from final_routes
+where
+    total_cost = (
+        select min(total_cost)
+        from final_routes
+    )
 order by 1, 2;
