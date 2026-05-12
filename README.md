@@ -19,11 +19,30 @@ Implementation of the shortest route search algorithm (TSP) using recursive CTEs
 
 ### ✨ Features
 
-| Exercise | Description |\n|----------|-------------|\n| ex00 | Data preparation: cities and distances table |\n| ex01 | Recursive CTE for route enumeration |
+| Exercise | Description |
+|----------|-------------|
+| ex00 | Data preparation: cities and distances table |
+| ex01 | Recursive CTE for route enumeration |
 
 ### 🚀 Quick Start
 
-```sql\n-- Recursive graph traversal\nWITH RECURSIVE routes AS (\n    SELECT point1 as path, point1, point2, cost, 1 as level\n    FROM roads\n    UNION ALL\n    SELECT r.path || ',' || roads.point2,\n           roads.point1, roads.point2,\n           r.cost + roads.cost, r.level + 1\n    FROM routes r\n    JOIN roads ON r.point2 = roads.point1\n    WHERE r.level < (SELECT COUNT(DISTINCT point1) FROM roads)\n)\nSELECT * FROM routes\nWHERE point2 = SUBSTRING(path FROM 1 FOR 1)\nORDER BY cost LIMIT 1;\n```
+```sql
+-- Recursive graph traversal
+WITH RECURSIVE routes AS (
+    SELECT point1 as path, point1, point2, cost, 1 as level
+    FROM roads
+    UNION ALL
+    SELECT r.path || ',' || roads.point2,
+           roads.point1, roads.point2,
+           r.cost + roads.cost, r.level + 1
+    FROM routes r
+    JOIN roads ON r.point2 = roads.point1
+    WHERE r.level < (SELECT COUNT(DISTINCT point1) FROM roads)
+)
+SELECT * FROM routes
+WHERE point2 = SUBSTRING(path FROM 1 FOR 1)
+ORDER BY cost LIMIT 1;
+```
 
 ---
 
@@ -42,11 +61,30 @@ Implementation of the shortest route search algorithm (TSP) using recursive CTEs
 
 ### ✨ Возможности
 
-| Задача | Описание |\n|--------|----------|\n| ex00 | Подготовка данных: таблица городов и расстояний |\n| ex01 | Рекурсивный CTE для перебора маршрутов |
+| Задача | Описание |
+|--------|----------|
+| ex00 | Подготовка данных: таблица городов и расстояний |
+| ex01 | Рекурсивный CTE для перебора маршрутов |
 
 ### 🚀 Быстрый старт
 
-```sql\n-- Рекурсивный обход графа\nWITH RECURSIVE routes AS (\n    SELECT point1 as path, point1, point2, cost, 1 as level\n    FROM roads\n    UNION ALL\n    SELECT r.path || ',' || roads.point2,\n           roads.point1, roads.point2,\n           r.cost + roads.cost, r.level + 1\n    FROM routes r\n    JOIN roads ON r.point2 = roads.point1\n    WHERE r.level < (SELECT COUNT(DISTINCT point1) FROM roads)\n)\nSELECT * FROM routes\nWHERE point2 = SUBSTRING(path FROM 1 FOR 1)\nORDER BY cost LIMIT 1;\n```
+```sql
+-- Рекурсивный обход графа
+WITH RECURSIVE routes AS (
+    SELECT point1 as path, point1, point2, cost, 1 as level
+    FROM roads
+    UNION ALL
+    SELECT r.path || ',' || roads.point2,
+           roads.point1, roads.point2,
+           r.cost + roads.cost, r.level + 1
+    FROM routes r
+    JOIN roads ON r.point2 = roads.point1
+    WHERE r.level < (SELECT COUNT(DISTINCT point1) FROM roads)
+)
+SELECT * FROM routes
+WHERE point2 = SUBSTRING(path FROM 1 FOR 1)
+ORDER BY cost LIMIT 1;
+```
 
 ---
 
